@@ -188,8 +188,8 @@ const HeroSection = () => {
     };
   }, []);
 
-  // Text animation variants
-  const nameLetters = "Ella Tanibe".split('');
+  // Text animation variants - split into words to prevent mid-word breaks on mobile
+  const nameWords = ["Ella", "Tanibe"];
   
   const letterVariants = {
     hidden: { opacity: 0, y: 50 },
@@ -285,24 +285,33 @@ const HeroSection = () => {
           </svg>
         </motion.div>
 
-        {/* Animated name with letter-by-letter reveal */}
-        <h1 className="font-display text-7xl md:text-8xl lg:text-9xl font-black text-cream mb-6 tracking-tight leading-none">
+        {/* Animated name with letter-by-letter reveal - words kept together */}
+        <h1 className="font-display text-5xl sm:text-6xl md:text-8xl lg:text-9xl font-black text-cream mb-6 tracking-tight leading-tight">
           {prefersReducedMotion ? (
             "Ella Tanibe"
           ) : (
-            nameLetters.map((letter, i) => (
-              <motion.span
-                key={i}
-                custom={i}
-                initial="hidden"
-                animate={isLoaded ? "visible" : "hidden"}
-                variants={letterVariants}
-                className="inline-block"
-                style={{ display: letter === ' ' ? 'inline' : 'inline-block' }}
-              >
-                {letter === ' ' ? '\u00A0' : letter}
-              </motion.span>
-            ))
+            nameWords.map((word, wordIndex) => {
+              // Calculate letter offset for animation timing
+              const letterOffset = nameWords.slice(0, wordIndex).join('').length + wordIndex;
+              return (
+                <span key={wordIndex} className="inline-block whitespace-nowrap">
+                  {word.split('').map((letter, letterIndex) => (
+                    <motion.span
+                      key={letterIndex}
+                      custom={letterOffset + letterIndex}
+                      initial="hidden"
+                      animate={isLoaded ? "visible" : "hidden"}
+                      variants={letterVariants}
+                      className="inline-block"
+                    >
+                      {letter}
+                    </motion.span>
+                  ))}
+                  {/* Add space between words except after the last word */}
+                  {wordIndex < nameWords.length - 1 && '\u00A0'}
+                </span>
+              );
+            })
           )}
         </h1>
         
