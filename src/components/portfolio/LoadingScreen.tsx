@@ -68,7 +68,7 @@ const LoadingScreen = () => {
 
         {/* Loading text */}
         <h2 className="font-display text-3xl md:text-4xl font-bold text-cream mb-4 animate-fadeIn">
-          Eleanor Rose
+          Ella Tanibe
         </h2>
         
         {/* Progress bar */}

@@ -9,7 +9,7 @@
 ```tsx
 // Line ~195-203
 <h1 className="...">
-  Eleanor Rose  {/* ← Change your name here */}
+  Ella Tanibe  {/* ← Change your name here */}
 </h1>
 
 <p className="...">

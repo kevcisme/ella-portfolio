@@ -1,5 +1,6 @@
-import { useState, FormEvent } from 'react';
+import { useState, FormEvent, useRef } from 'react';
 import { Send } from 'lucide-react';
+import { motion, useInView, useReducedMotion } from 'framer-motion';
 
 const ContactSection = () => {
   const [formData, setFormData] = useState({
@@ -10,6 +11,10 @@ const ContactSection = () => {
   const [focusedField, setFocusedField] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
+
+  const sectionRef = useRef<HTMLDivElement>(null);
+  const isInView = useInView(sectionRef, { once: true, amount: 0.2 });
+  const prefersReducedMotion = useReducedMotion();
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
@@ -35,8 +40,35 @@ const ContactSection = () => {
     }));
   };
 
+  // Animation variants
+  const containerVariants = {
+    hidden: {},
+    visible: {
+      transition: {
+        staggerChildren: 0.15,
+        delayChildren: 0.3,
+      },
+    },
+  };
+
+  const itemVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: {
+        duration: 0.5,
+        ease: [0.25, 0.1, 0.25, 1],
+      },
+    },
+  };
+
   return (
-    <section id="contact" className="relative min-h-screen bg-forest-deep py-24 px-6 md:px-12 lg:px-24 flex items-center">
+    <section 
+      ref={sectionRef}
+      id="contact" 
+      className="relative min-h-screen bg-forest-deep py-24 px-6 md:px-12 lg:px-24 flex items-center"
+    >
       {/* Noise texture overlay */}
       <div className="absolute inset-0 opacity-[0.03] pointer-events-none bg-repeat" 
         style={{
@@ -46,64 +78,123 @@ const ContactSection = () => {
       />
 
       <div className="relative max-w-4xl mx-auto w-full">
-        {/* Botanical divider */}
-        <div className="flex items-center justify-center mb-16">
+        {/* Botanical divider with SVG drawing animation */}
+        <motion.div 
+          className="flex items-center justify-center mb-16"
+          initial={{ opacity: 0 }}
+          animate={isInView ? { opacity: 1 } : { opacity: 0 }}
+          transition={{ duration: 0.6 }}
+        >
           <svg width="250" height="80" viewBox="0 0 250 80" className="opacity-50">
-            <path 
+            <motion.path 
               d="M 20 40 Q 70 20, 125 40 T 230 40" 
               stroke="#d4af37" 
               strokeWidth="1.5" 
               fill="none"
               strokeLinecap="round"
+              initial={{ pathLength: 0 }}
+              animate={isInView ? { pathLength: 1 } : { pathLength: 0 }}
+              transition={{ duration: 1.2, ease: "easeInOut" }}
             />
             {/* Vine leaves */}
-            <ellipse cx="60" cy="30" rx="8" ry="12" fill="#4a6b5c" opacity="0.4" />
-            <ellipse cx="125" cy="40" rx="10" ry="14" fill="#d4af37" opacity="0.5" />
-            <ellipse cx="190" cy="30" rx="8" ry="12" fill="#4a6b5c" opacity="0.4" />
+            <motion.ellipse 
+              cx="60" cy="30" rx="8" ry="12" fill="#4a6b5c" opacity="0.4"
+              initial={{ scale: 0 }}
+              animate={isInView ? { scale: 1 } : { scale: 0 }}
+              transition={{ delay: 0.8, duration: 0.3 }}
+            />
+            <motion.ellipse 
+              cx="125" cy="40" rx="10" ry="14" fill="#d4af37" opacity="0.5"
+              initial={{ scale: 0 }}
+              animate={isInView ? { scale: 1 } : { scale: 0 }}
+              transition={{ delay: 1, duration: 0.3 }}
+            />
+            <motion.ellipse 
+              cx="190" cy="30" rx="8" ry="12" fill="#4a6b5c" opacity="0.4"
+              initial={{ scale: 0 }}
+              animate={isInView ? { scale: 1 } : { scale: 0 }}
+              transition={{ delay: 0.8, duration: 0.3 }}
+            />
           </svg>
-        </div>
+        </motion.div>
 
         {/* Section title */}
-        <div className="text-center mb-12">
+        <motion.div 
+          className="text-center mb-12"
+          initial={{ opacity: 0, y: 30 }}
+          animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
+          transition={{ duration: 0.6, delay: 0.2 }}
+        >
           <h2 className="font-display text-5xl md:text-6xl font-bold text-cream mb-4">
             Get in Touch
           </h2>
           <p className="font-body text-lg text-cream/60 max-w-2xl mx-auto">
             Commissions and inquiries are always welcome. Let's create something beautiful together.
           </p>
-        </div>
+        </motion.div>
 
         {/* Form container with parchment effect */}
-        <div className="relative bg-sage/20 rounded-lg p-8 md:p-12 backdrop-blur-sm border border-gold/20">
-          {/* Decorative corners */}
-          <div className="absolute top-0 left-0 w-16 h-16">
+        <motion.div 
+          className="relative bg-sage/20 rounded-lg p-8 md:p-12 backdrop-blur-sm border border-gold/20"
+          initial={{ opacity: 0, y: 40 }}
+          animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 40 }}
+          transition={{ duration: 0.6, delay: 0.4 }}
+        >
+          {/* Decorative corners with staggered animation */}
+          <motion.div 
+            className="absolute top-0 left-0 w-16 h-16"
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={isInView ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.8 }}
+            transition={{ delay: 0.5, duration: 0.3 }}
+          >
             <svg viewBox="0 0 64 64" className="w-full h-full">
               <path d="M 4 32 Q 4 4, 32 4" stroke="#d4af37" strokeWidth="1.5" fill="none" opacity="0.6" />
               <circle cx="12" cy="12" r="2.5" fill="#d4af37" opacity="0.6" />
             </svg>
-          </div>
-          <div className="absolute top-0 right-0 w-16 h-16 rotate-90">
+          </motion.div>
+          <motion.div 
+            className="absolute top-0 right-0 w-16 h-16 rotate-90"
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={isInView ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.8 }}
+            transition={{ delay: 0.55, duration: 0.3 }}
+          >
             <svg viewBox="0 0 64 64" className="w-full h-full">
               <path d="M 4 32 Q 4 4, 32 4" stroke="#d4af37" strokeWidth="1.5" fill="none" opacity="0.6" />
               <circle cx="12" cy="12" r="2.5" fill="#d4af37" opacity="0.6" />
             </svg>
-          </div>
-          <div className="absolute bottom-0 left-0 w-16 h-16 -rotate-90">
+          </motion.div>
+          <motion.div 
+            className="absolute bottom-0 left-0 w-16 h-16 -rotate-90"
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={isInView ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.8 }}
+            transition={{ delay: 0.6, duration: 0.3 }}
+          >
             <svg viewBox="0 0 64 64" className="w-full h-full">
               <path d="M 4 32 Q 4 4, 32 4" stroke="#d4af37" strokeWidth="1.5" fill="none" opacity="0.6" />
               <circle cx="12" cy="12" r="2.5" fill="#d4af37" opacity="0.6" />
             </svg>
-          </div>
-          <div className="absolute bottom-0 right-0 w-16 h-16 rotate-180">
+          </motion.div>
+          <motion.div 
+            className="absolute bottom-0 right-0 w-16 h-16 rotate-180"
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={isInView ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.8 }}
+            transition={{ delay: 0.65, duration: 0.3 }}
+          >
             <svg viewBox="0 0 64 64" className="w-full h-full">
               <path d="M 4 32 Q 4 4, 32 4" stroke="#d4af37" strokeWidth="1.5" fill="none" opacity="0.6" />
               <circle cx="12" cy="12" r="2.5" fill="#d4af37" opacity="0.6" />
             </svg>
-          </div>
+          </motion.div>
 
-          <form onSubmit={handleSubmit} className="space-y-8">
+          <motion.form 
+            onSubmit={handleSubmit} 
+            className="space-y-8"
+            variants={containerVariants}
+            initial="hidden"
+            animate={isInView ? "visible" : "hidden"}
+          >
             {/* Name field */}
-            <div className="relative">
+            <motion.div className="relative" variants={itemVariants}>
               <label 
                 htmlFor="name" 
                 className="block font-body text-sm text-cream/70 mb-2 tracking-wide"
@@ -129,7 +220,7 @@ const ContactSection = () => {
                     : 'border-gold/20 hover:border-gold/40'
                   }
                 `}
-                placeholder="Eleanor Rose"
+                placeholder="Ella Tanibe"
                 style={{
                   backgroundImage: focusedField === 'name' 
                     ? `url("data:image/svg+xml,%3Csvg width='20' height='20' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='2' cy='2' r='1' fill='%23d4af37' opacity='0.1'/%3E%3C/svg%3E")`
@@ -138,12 +229,17 @@ const ContactSection = () => {
               />
               {/* Inkwell effect */}
               {focusedField === 'name' && (
-                <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-1/3 h-0.5 bg-gradient-to-r from-transparent via-gold to-transparent animate-fadeIn" />
+                <motion.div 
+                  className="absolute bottom-0 left-1/2 -translate-x-1/2 w-1/3 h-0.5 bg-gradient-to-r from-transparent via-gold to-transparent"
+                  initial={{ scaleX: 0, opacity: 0 }}
+                  animate={{ scaleX: 1, opacity: 1 }}
+                  transition={{ duration: 0.3 }}
+                />
               )}
-            </div>
+            </motion.div>
 
             {/* Email field */}
-            <div className="relative">
+            <motion.div className="relative" variants={itemVariants}>
               <label 
                 htmlFor="email" 
                 className="block font-body text-sm text-cream/70 mb-2 tracking-wide"
@@ -177,12 +273,17 @@ const ContactSection = () => {
                 }}
               />
               {focusedField === 'email' && (
-                <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-1/3 h-0.5 bg-gradient-to-r from-transparent via-gold to-transparent animate-fadeIn" />
+                <motion.div 
+                  className="absolute bottom-0 left-1/2 -translate-x-1/2 w-1/3 h-0.5 bg-gradient-to-r from-transparent via-gold to-transparent"
+                  initial={{ scaleX: 0, opacity: 0 }}
+                  animate={{ scaleX: 1, opacity: 1 }}
+                  transition={{ duration: 0.3 }}
+                />
               )}
-            </div>
+            </motion.div>
 
             {/* Message field */}
-            <div className="relative">
+            <motion.div className="relative" variants={itemVariants}>
               <label 
                 htmlFor="message" 
                 className="block font-body text-sm text-cream/70 mb-2 tracking-wide"
@@ -216,19 +317,25 @@ const ContactSection = () => {
                 }}
               />
               {focusedField === 'message' && (
-                <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-1/3 h-0.5 bg-gradient-to-r from-transparent via-gold to-transparent animate-fadeIn" />
+                <motion.div 
+                  className="absolute bottom-0 left-1/2 -translate-x-1/2 w-1/3 h-0.5 bg-gradient-to-r from-transparent via-gold to-transparent"
+                  initial={{ scaleX: 0, opacity: 0 }}
+                  animate={{ scaleX: 1, opacity: 1 }}
+                  transition={{ duration: 0.3 }}
+                />
               )}
-            </div>
+            </motion.div>
 
             {/* Submit button with wax seal effect */}
-            <div className="flex justify-center pt-4">
-              <button
+            <motion.div className="flex justify-center pt-4" variants={itemVariants}>
+              <motion.button
                 type="submit"
                 disabled={isSubmitting}
                 className="group relative px-10 py-4 bg-gold hover:bg-gold/90 text-forest-deep font-body font-semibold
                   rounded-lg transition-all duration-500 ease-out
-                  hover:shadow-2xl hover:shadow-gold/30 hover:scale-105
-                  disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
+                  disabled:opacity-50 disabled:cursor-not-allowed"
+                whileHover={prefersReducedMotion ? {} : { scale: 1.05, boxShadow: "0 20px 40px rgba(212, 175, 55, 0.3)" }}
+                whileTap={prefersReducedMotion ? {} : { scale: 0.98 }}
               >
                 {/* Wax seal animation container */}
                 <div className={`
@@ -247,47 +354,73 @@ const ContactSection = () => {
                   ) : (
                     <>
                       Send Message
-                      <Send className="w-5 h-5 group-hover:translate-x-1 transition-transform duration-300" />
+                      <motion.span
+                        animate={prefersReducedMotion ? {} : { x: [0, 4, 0] }}
+                        transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
+                      >
+                        <Send className="w-5 h-5" />
+                      </motion.span>
                     </>
                   )}
                 </span>
-              </button>
-            </div>
+              </motion.button>
+            </motion.div>
 
             {/* Success message */}
             {isSubmitted && (
-              <div className="text-center animate-fadeIn">
+              <motion.div 
+                className="text-center"
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10 }}
+                transition={{ duration: 0.4 }}
+              >
                 <div className="inline-block px-6 py-3 bg-gold/20 border border-gold/40 rounded-lg">
                   <p className="font-body text-gold">
                     ✨ Message sent successfully! I'll be in touch soon.
                   </p>
                 </div>
-              </div>
+              </motion.div>
             )}
-          </form>
-        </div>
+          </motion.form>
+        </motion.div>
 
         {/* Footer info */}
-        <div className="mt-12 text-center space-y-4">
+        <motion.div 
+          className="mt-12 text-center space-y-4"
+          initial={{ opacity: 0 }}
+          animate={isInView ? { opacity: 1 } : { opacity: 0 }}
+          transition={{ delay: 1, duration: 0.6 }}
+        >
           <div className="flex items-center justify-center gap-2">
-            <div className="w-12 h-px bg-gold/30" />
+            <motion.div 
+              className="w-12 h-px bg-gold/30"
+              initial={{ scaleX: 0 }}
+              animate={isInView ? { scaleX: 1 } : { scaleX: 0 }}
+              transition={{ delay: 1.1, duration: 0.4 }}
+            />
             <p className="font-script text-2xl text-gold">or</p>
-            <div className="w-12 h-px bg-gold/30" />
+            <motion.div 
+              className="w-12 h-px bg-gold/30"
+              initial={{ scaleX: 0 }}
+              animate={isInView ? { scaleX: 1 } : { scaleX: 0 }}
+              transition={{ delay: 1.1, duration: 0.4 }}
+            />
           </div>
           <p className="font-body text-cream/60">
             Email me directly at{' '}
-            <a href="mailto:hello@eleanorrose.art" className="text-gold hover:text-gold/80 transition-colors underline decoration-gold/30">
-              hello@eleanorrose.art
+            <a href="mailto:tahtidesigns@gmail.com" className="text-gold hover:text-gold/80 transition-colors underline decoration-gold/30">
+              tahtidesigns@gmail.com
             </a>
           </p>
           
           {/* Copyright */}
           <div className="pt-8 border-t border-gold/10 mt-12">
             <p className="font-body text-sm text-cream/40">
-              © 2024 Eleanor Rose. All botanical illustrations are original works.
+              © 2026 Ella Tanibe. All illustrations are original works.
             </p>
           </div>
-        </div>
+        </motion.div>
       </div>
     </section>
   );

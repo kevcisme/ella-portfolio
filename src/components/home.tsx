@@ -7,6 +7,8 @@ import GallerySection from './portfolio/GallerySection';
 import AboutSection from './portfolio/AboutSection';
 import ContactSection from './portfolio/ContactSection';
 import ScrollDivider from './portfolio/ScrollDivider';
+import FloatingParticles from './portfolio/FloatingParticles';
+import CustomCursor from './portfolio/CustomCursor';
 
 function Home() {
   const [activeSection, setActiveSection] = useState('hero');
@@ -36,6 +38,12 @@ function Home() {
 
   return (
     <>
+      {/* Custom Cursor (desktop only) */}
+      <CustomCursor />
+      
+      {/* Atmospheric floating particles */}
+      <FloatingParticles />
+      
       {/* Loading Screen */}
       <LoadingScreen />
       
